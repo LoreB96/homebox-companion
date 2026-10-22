@@ -206,4 +206,5 @@ async def vision_completion(
         messages,
         response_format=response_format,
         expected_keys=expected_keys,
+        timeout=config.settings.llm_vision_timeout,
     )

@@ -13,6 +13,12 @@ import type {
 	MergeItem,
 } from '../types';
 
+/**
+ * Vision requests can take a long time (multiple images, slow/local models).
+ * Must stay >= backend HBC_LLM_VISION_TIMEOUT (default 1800s).
+ */
+const VISION_REQUEST_TIMEOUT_MS = 30 * 60_000;
+
 export interface DetectOptions {
 	singleItem?: boolean;
 	extraInstructions?: string;
@@ -91,6 +97,7 @@ export const vision = {
 		return requestFormData<DetectionResponse>('/tools/vision/detect', formData, {
 			errorMessage: 'Detection failed',
 			signal: options.signal,
+			timeout: VISION_REQUEST_TIMEOUT_MS,
 			headers,
 		});
 	},
@@ -120,6 +127,7 @@ export const vision = {
 		return requestFormData<AdvancedItemDetails>('/tools/vision/analyze', formData, {
 			errorMessage: 'Analysis failed',
 			signal: options.signal,
+			timeout: VISION_REQUEST_TIMEOUT_MS,
 			headers,
 		});
 	},
@@ -139,6 +147,7 @@ export const vision = {
 			method: 'POST',
 			body: JSON.stringify({ items: itemsToMerge }),
 			signal: options.signal,
+			timeout: VISION_REQUEST_TIMEOUT_MS,
 			headers,
 		});
 	},
@@ -167,6 +176,7 @@ export const vision = {
 		return requestFormData<CorrectionResponse>('/tools/vision/correct', formData, {
 			errorMessage: 'Correction failed',
 			signal: options.signal,
+			timeout: VISION_REQUEST_TIMEOUT_MS,
 			headers,
 		});
 	},

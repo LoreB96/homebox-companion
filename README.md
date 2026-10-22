@@ -272,6 +272,7 @@ For a quick setup, you only need to provide your OpenAI API key. All other setti
 | `HBC_LLM_ALLOW_UNSAFE_MODELS` | `false` | Skip capability validation for unrecognized models |
 | `HBC_LLM_TIMEOUT` | `120` | LLM request timeout in seconds |
 | `HBC_LLM_STREAM_TIMEOUT` | `300` | Streaming timeout for large responses (e.g., hierarchical views) |
+| `HBC_LLM_VISION_TIMEOUT` | `1800` | Vision (image analysis) timeout in seconds (30 min) |
 | `HBC_MAX_UPLOAD_SIZE_MB` | `20` | Maximum bytes per file, expressed in MiB; must be positive. |
 | `HBC_MAX_REQUEST_SIZE_MB` | `100` | Maximum aggregate API request body in MiB, including all files and multipart overhead; enforced while streaming, before parsing can exceed the limit. Must be positive. |
 | `HBC_IMAGE_QUALITY` | `medium` | Image quality for Homebox uploads: `raw`, `high`, `medium`, `low` |
