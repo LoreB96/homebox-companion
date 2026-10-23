@@ -94,8 +94,8 @@ async def search_item(item: DetectedItem) -> list[WebSearchResult]:
             if result.url and result.url not in unique:
                 unique[result.url] = result
 
+        logger.info(f"Web search {query!r} returned {len(unique)} result(s)")
         if unique:
-            logger.debug(f"Web search {query!r} returned {len(unique)} result(s)")
             return list(unique.values())
 
     return []

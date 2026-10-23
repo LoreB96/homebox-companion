@@ -18,7 +18,7 @@ from ...ai.response_models import get_single_item_response_model
 from ...core import config
 from .models import DetectedItem, get_single_item_adapter
 from .prompts import build_enrichment_system_prompt, build_enrichment_user_prompt
-from .web_search import search_item
+from .web_search import build_search_queries, search_item
 
 if TYPE_CHECKING:
     from ...core.persistent_settings import CustomFieldDefinition
@@ -51,9 +51,13 @@ async def enrich_item(
     Quantity, serial number and purchase info always come from detection,
     since they describe this specific item, not the product.
     """
+    if not build_search_queries(item):
+        logger.info(f"Web search skipped for '{item.name}': no manufacturer or model number detected")
+        return item
+
     results = await search_item(item)
     if not results:
-        logger.debug(f"No web results for '{item.name}', keeping detection")
+        logger.info(f"No web results for '{item.name}', keeping detection")
         return item
 
     system_prompt = build_enrichment_system_prompt(
@@ -91,7 +95,7 @@ async def enrich_item(
     )
 
     logger.info(f"Web enrichment: '{item.name}' -> '{enriched.name}' ({len(results)} result(s))")
-    logger.debug(f"  Sources: {[r.url for r in results]}")
+    logger.info(f"  Sources: {[r.url for r in results]}")
     return enriched
 
 
