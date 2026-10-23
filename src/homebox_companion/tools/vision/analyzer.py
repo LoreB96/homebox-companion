@@ -8,6 +8,7 @@ from loguru import logger
 
 from ...ai.llm import vision_completion
 from ...ai.response_models import get_single_item_response_model
+from .enricher import enrich_items
 from .models import DetectedItem, get_single_item_adapter
 from .prompts import build_analysis_system_prompt
 
@@ -66,6 +67,16 @@ async def analyze_item_details_from_images(
     # Validate through Pydantic (same dynamic model as detector)
     adapter = get_single_item_adapter(custom_fields)
     item = adapter.validate_python(parsed_content)
+
+    # Optional second pass: identify brand/model codes via web search
+    [item] = await enrich_items(
+        [item],
+        image_data_uris,
+        tags=tags,
+        field_preferences=field_preferences,
+        output_language=output_language,
+        custom_fields=custom_fields,
+    )
 
     logger.info(f"Analysis complete. Fields: {list(item.model_fields.keys())}")
 

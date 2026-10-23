@@ -33,6 +33,11 @@ Environment Variables:
     HBC_CHAT_APPROVAL_TIMEOUT: Seconds before pending approvals expire (default: 300)
     HBC_PRINT_ENABLED: Enable the print label button in the UI (default: false).
         Requires HBOX_LABEL_MAKER_PRINT_COMMAND to be configured on the Homebox server.
+    HBC_WEB_SEARCH_ENABLED: Search the web for detected brand/model codes and let the
+        LLM re-identify items with the results (default: false). Uses DDGS, no API key.
+    HBC_WEB_SEARCH_MAX_RESULTS: Web results passed to the LLM per item (default: 5)
+    HBC_WEB_SEARCH_REGION: DDGS region, e.g. it-it, us-en (default: wt-wt = no region)
+    HBC_WEB_SEARCH_TIMEOUT: Web search timeout in seconds (default: 10)
 
 AI Output Customization env vars (HBC_AI_*) are handled separately in
 field_preferences.py via FieldPreferencesDefaults.
@@ -151,6 +156,12 @@ class Settings(BaseSettings):
 
     # Label printing configuration
     print_enabled: bool = False  # Enable server-side label printing via Homebox labelmaker
+
+    # Web search enrichment (second LLM pass using web results for brand/model codes)
+    web_search_enabled: bool = False
+    web_search_max_results: int = Field(default=5, gt=0, le=20)
+    web_search_region: str = "wt-wt"
+    web_search_timeout: int = Field(default=10, gt=0)
 
     @field_validator("homebox_api_key", mode="before")
     @classmethod

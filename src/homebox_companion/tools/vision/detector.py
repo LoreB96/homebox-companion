@@ -9,6 +9,7 @@ from loguru import logger
 from ...ai.images import encode_image_bytes_to_data_uri
 from ...ai.llm import vision_completion
 from ...ai.response_models import get_items_response_model
+from .enricher import enrich_items
 from .models import DetectedItem, get_items_adapter
 from .prompts import (
     build_detection_system_prompt,
@@ -140,6 +141,16 @@ async def _detect_items_from_data_uris(
     # Validate LLM output with Pydantic (dynamic model if custom fields configured)
     adapter = get_items_adapter(custom_fields)
     items = adapter.validate_python(parsed_content.get("items", []))
+
+    # Optional second pass: identify brand/model codes via web search
+    items = await enrich_items(
+        items,
+        image_data_uris,
+        tags=tags,
+        field_preferences=field_preferences,
+        output_language=output_language,
+        custom_fields=custom_fields,
+    )
 
     logger.info(f"Detected {len(items)} items from {len(image_data_uris)} image(s)")
     for item in items:

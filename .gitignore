@@ -65,3 +65,8 @@ tests/label_print/
 
 # Antigravity
 .gemini/
+
+
+aws_iot_jitp.env
+device-root-ca.key
+device-root-ca.crt
