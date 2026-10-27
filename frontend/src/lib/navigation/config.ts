@@ -10,7 +10,7 @@ export interface NavItem {
 	id: string;
 	label: string;
 	href: string;
-	icon: 'scan' | 'settings' | 'chat';
+	icon: 'scan' | 'settings' | 'chat' | 'value';
 	/** Routes that should highlight this nav item as active */
 	activeRoutes: string[];
 	/** Whether this item is disabled */
@@ -66,6 +66,13 @@ export function getNavItems(scanHref: string, isDemoModeExplicit: boolean): NavI
 			href: scanHref,
 			icon: 'scan',
 			activeRoutes: ['/location', '/capture', '/review', '/summary', '/success'],
+		},
+		{
+			id: 'value',
+			label: 'Value',
+			href: '/value',
+			icon: 'value',
+			activeRoutes: ['/value'],
 		},
 		{
 			id: 'settings',

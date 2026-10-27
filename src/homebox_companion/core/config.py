@@ -165,6 +165,14 @@ class Settings(BaseSettings):
     web_search_region: str = "wt-wt"
     web_search_timeout: int = Field(default=10, gt=0)
 
+    # Used-market valuation (background job; approved values go to a Homebox custom field)
+    valuation_field_name: str = "Valore usato"
+    valuation_region: str = "it-it"
+    valuation_currency: str = "EUR"
+    valuation_language: str = "Italian"
+    valuation_max_results: int = Field(default=8, gt=0, le=20)
+    valuation_search_delay: float = Field(default=3.0, ge=0)  # Seconds between web searches
+
     @field_validator("ai_request_timeout", mode="before")
     @classmethod
     def normalize_ai_request_timeout(cls, value: object) -> object:

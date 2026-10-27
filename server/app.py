@@ -302,6 +302,12 @@ async def lifespan(app: FastAPI):
 
     app.state.session_store = MemorySessionStore()
 
+    from homebox_companion.tools.valuation import ValuationStore
+
+    from .services.valuation_jobs import ValuationJobManager
+
+    app.state.valuation_jobs = ValuationJobManager(ValuationStore())
+
     # The session store belongs to this app lifespan. The shared tool registry
     # and schema cache are initialized lazily by ToolExecutorHolder.
 
@@ -309,6 +315,9 @@ async def lifespan(app: FastAPI):
 
     # Cleanup
     logger.info("Shutting down Homebox Companion API")
+
+    # Stop a running valuation; it is marked interrupted and resumable
+    await app.state.valuation_jobs.shutdown()
 
     # Reset holders (executor and session store don't need async cleanup)
     tool_executor_holder.reset()
