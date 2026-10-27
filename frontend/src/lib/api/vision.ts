@@ -3,6 +3,7 @@
  */
 
 import { request, requestFormData } from './client';
+import { getAiRequestTimeoutMs } from './aiTimeout';
 import { getIsDemoMode, fieldPreferences } from './settings';
 import { apiLogger as log } from '../utils/logger';
 import type {
@@ -12,12 +13,6 @@ import type {
 	CorrectionResponse,
 	MergeItem,
 } from '../types';
-
-/**
- * Vision requests can take a long time (multiple images, slow/local models).
- * Must stay >= backend HBC_LLM_VISION_TIMEOUT (default 1800s).
- */
-const VISION_REQUEST_TIMEOUT_MS = 30 * 60_000;
 
 export interface DetectOptions {
 	singleItem?: boolean;
@@ -97,7 +92,7 @@ export const vision = {
 		return requestFormData<DetectionResponse>('/tools/vision/detect', formData, {
 			errorMessage: 'Detection failed',
 			signal: options.signal,
-			timeout: VISION_REQUEST_TIMEOUT_MS,
+			timeout: getAiRequestTimeoutMs(),
 			headers,
 		});
 	},
@@ -127,7 +122,7 @@ export const vision = {
 		return requestFormData<AdvancedItemDetails>('/tools/vision/analyze', formData, {
 			errorMessage: 'Analysis failed',
 			signal: options.signal,
-			timeout: VISION_REQUEST_TIMEOUT_MS,
+			timeout: getAiRequestTimeoutMs(),
 			headers,
 		});
 	},
@@ -147,7 +142,7 @@ export const vision = {
 			method: 'POST',
 			body: JSON.stringify({ items: itemsToMerge }),
 			signal: options.signal,
-			timeout: VISION_REQUEST_TIMEOUT_MS,
+			timeout: getAiRequestTimeoutMs(),
 			headers,
 		});
 	},
@@ -176,7 +171,7 @@ export const vision = {
 		return requestFormData<CorrectionResponse>('/tools/vision/correct', formData, {
 			errorMessage: 'Correction failed',
 			signal: options.signal,
-			timeout: VISION_REQUEST_TIMEOUT_MS,
+			timeout: getAiRequestTimeoutMs(),
 			headers,
 		});
 	},
