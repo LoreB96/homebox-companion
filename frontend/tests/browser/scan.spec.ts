@@ -23,6 +23,22 @@ async function createConfirmedScan(page: Page, itemName: string, manufacturer?: 
 	await expect(page).toHaveURL(/\/summary$/);
 }
 
+test('analysis reaches review when randomUUID is unavailable over plain HTTP', async ({
+	page,
+	api,
+}) => {
+	await page.addInitScript(() => {
+		Object.defineProperty(crypto, 'randomUUID', { value: undefined, configurable: true });
+	});
+	api.on('POST', '/api/tools/vision/detect', () => json(detectedItems(['Desk lamp'])));
+
+	await selectLocation(page);
+	await uploadPhoto(page);
+	await analyzePhotos(page);
+
+	await expect.poll(() => readStoredSession(page)).not.toBeNull();
+});
+
 test('reediting a confirmed item preserves its asset ID and edited custom fields through submission', async ({
 	page,
 	api,

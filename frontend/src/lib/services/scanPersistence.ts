@@ -12,6 +12,7 @@ import {
 } from './serialize';
 import * as storage from './sessionPersistence';
 import { workflowLogger as log } from '$lib/utils/logger';
+import { createUuid } from '$lib/utils/uuid';
 
 export { captureSessionScope } from './sessionPersistence';
 export type { SessionSummary } from './sessionPersistence';
@@ -105,7 +106,7 @@ export class ScanPersistence {
 				}
 				const now = Date.now();
 				this.createdAt ??= now;
-				this.sessionId ??= crypto.randomUUID();
+				this.sessionId ??= createUuid();
 				const session: StoredSession = {
 					...snapshot,
 					id: this.sessionId,
@@ -151,7 +152,7 @@ export class ScanPersistence {
 			// Old sessions did not store raw selected files. Reuse captured source photos
 			// only when no explicit photo list exists (including an intentional empty list).
 			const hydrateLegacy = (item: ReviewItem, stored: { photos?: unknown; reviewId?: string }) => {
-				item.reviewId ??= crypto.randomUUID();
+				item.reviewId ??= createUuid();
 				if (stored.photos === undefined && !item.originalFile) {
 					item.originalFile = images[item.sourceImageIndex]?.file;
 					item.additionalImages ??= images[item.sourceImageIndex]?.additionalFiles;

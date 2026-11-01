@@ -10,6 +10,7 @@
 
 import type { ReviewItem, ConfirmedItem } from '$lib/types';
 import { copyReviewItem } from '$lib/services/reviewEditor.svelte';
+import { createUuid } from '$lib/utils/uuid';
 
 // =============================================================================
 // REVIEW SERVICE CLASS
@@ -81,7 +82,7 @@ export class ReviewService {
 		this._activeDraft = null;
 		this._detectedItems = items.map((item) => ({
 			...item,
-			reviewId: item.reviewId ?? crypto.randomUUID(),
+			reviewId: item.reviewId ?? createUuid(),
 		}));
 		this._currentReviewIndex = 0;
 	}
@@ -90,7 +91,7 @@ export class ReviewService {
 	setConfirmedItems(items: ConfirmedItem[]): void {
 		this._confirmedItems = items.map((item) => ({
 			...item,
-			reviewId: item.reviewId ?? crypto.randomUUID(),
+			reviewId: item.reviewId ?? createUuid(),
 		}));
 	}
 

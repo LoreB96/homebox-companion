@@ -22,6 +22,7 @@ import type {
 	ItemSubmissionStatus,
 	DuplicateMatch,
 } from '$lib/types';
+import { createUuid } from '$lib/utils/uuid';
 
 // =============================================================================
 // STORED TYPES (Serializable - no File objects or Object URLs)
@@ -236,7 +237,7 @@ export async function serializeImage(img: CapturedImage): Promise<StoredImage> {
 	}
 
 	return {
-		id: crypto.randomUUID(),
+		id: createUuid(),
 		filename: img.file.name,
 		mimeType: img.file.type || 'image/jpeg',
 		dataUrl,

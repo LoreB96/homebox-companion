@@ -15,7 +15,7 @@ function load(filename, imports = {}, globals = {}) {
 	const exports = {};
 	runInNewContext(outputText, {
 		exports,
-		require: (name) => imports[name],
+		require: (name) => (name === '$lib/utils/uuid' ? load('../utils/uuid.ts') : imports[name]),
 		crypto: globalThis.crypto,
 		...globals,
 	});
